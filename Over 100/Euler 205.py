@@ -1,63 +1,44 @@
-pyr=[1]
-sqr=[1]
+"""
+Peter has nine four-sided (pyramidal) dice, each with faces numbered 1, 2, 3, 4.
+Colin has six six-sided (cubic) dice, each with faces numbered 1, 2, 3, 4, 5, 6.
 
-def addarr(a,b):
-    out=[]
-    while(len(a)>len(b)):
-        b.append(0)
-    while(len(b)>len(a)):
-        a.append(0)
-    for i in range(len(a)):
-        out.append( a[i]+b[i])
-    return out
+Peter and Colin roll their dice and compare totals: the highest total wins. The result is a draw if the totals are equal.
 
-def roll4(score):
-    r1=[0]+score
-    r2=[0]*2+score
-    r3=[0]*3+score
-    r4=[0]*4+score
+What is the probability that Pyramidal Pete beats Cubic Colin? Give your answer rounded to seven decimal places in the form 0.abcdefg
+"""
+#In this problem, any list[i] = the chance of rolling i
 
-    ra=addarr(r1,r2)
-    rb=addarr(r3,r4)
-    rc=addarr(ra,rb)
-
-    return rc
-
-def roll6(score):
-    r1=[0]+score
-    r2=[0]*2+score
-    r3=[0]*3+score
-    r4=[0]*4+score
-    r5=[0]*5+score
-    r6=[0]*6+score
-
-    ra=addarr(r1,r2)
-    rb=addarr(ra,r3)
-    rc=addarr(rb,r4)
-    rd=addarr(rc,r5)
-    re=addarr(rd,r6)
-
-    return re
+import time
+start = time.clock()
 
 
-for i in range(9):
-    pyr=roll4(pyr)
+#returns the a list where list[i] is the probability of rolling
+#a sum of i from (n) (sides)-sided dice
+def dice_rolls(sides,n):
+    #ans and die are distributions
+    ans = [1]
+    die = [0] + [1/sides] * sides
 
-for i in range(6):
-    sqr=roll6(sqr)
+    for roll in range(n):
+        #calculate distributing when adding current distritbution (ans)
+        #with die
+        tmp = [0] * (len(die) + len(ans) - 1)
 
-pwin=0
-cwin=0
-tie=0
-for i in range(37):
-    for j in range(37):
-        if i==j:
-            tie+=pyr[i]*sqr[j]
-        elif i>j:
-            pwin+=pyr[i]*sqr[j]
-        elif i<j:
-            cwin+=pyr[i]*sqr[j]
-tot=pwin+cwin+tie
-print(pwin/tot)
-print(cwin/tot)
-print(tie/tot)
+        for ind1 in range(len(ans)):
+            for ind2 in range(len(die)):
+                tmp[ind1 + ind2] += ans[ind1] * die[ind2]
+
+        ans = tmp
+    return ans
+
+Colin = dice_rolls(6,6)
+Peter = dice_rolls(4,9)
+
+
+ans = 0
+#consider possibilities where Peter > Colin
+for indP in range(37):
+    for indC in range(indP):
+        ans += Colin[indC] * Peter[indP]
+
+print("%0.7f"% ans , time.clock()-start )
