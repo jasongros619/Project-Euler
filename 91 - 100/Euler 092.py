@@ -1,31 +1,32 @@
-#ans=8581146
+"""
+A number chain is created by continuously adding the square of the digits in a number to form a new number until it has been seen before.
+
+For example,
+
+44 → 32 → 13 → 10 → 1 → 1
+85 → 89 → 145 → 42 → 20 → 4 → 16 → 37 → 58 → 89
+
+Therefore any chain that arrives at 1 or 89 will become stuck in an endless loop. What is most amazing is that EVERY starting number will eventually arrive at 1 or 89.
+
+How many starting numbers below ten million will arrive at 89?
+"""
+import time
+start = time.clock()
+
 def next(n):
-    txt=list(str(n))
-    for t in range( len(txt) ):
-        txt[t]= int(txt[t])**2
-    return sum(txt)
-    
+    return 0 if n == 0 else (n%10)**2 + next(n//10)
 
-arr=[]
-for i in range(730):
-    arr.append( next(i) )
-arr[1]=1
-arr[89]=89
+chain = [None]*(10**6)
+chain[0] = False
+chain[1] = False
+chain[89] = True
 
-for j in range(3):
-    for i in range(730):
-        arr[i]=arr[ arr[i] ]
+def solve(n):
+    if chain[n] == None:
+        parent = next(n)
+        if chain[n] == None:
+            solve(parent)
+        chain[n] = chain[parent]
+    return chain[n]
 
-count=0
-for i in arr:
-    if i==89:
-        count+=1
-print(count)        
-for i in range(730,10**7):
-    if arr[ next(i) ]==89:
-        count+=1
-    if(i%10**6==0):
-        print(i/10**6)
-print(count)
-
-#ans=8581146
+print(sum([ 1 for i in range(1,10**6) if solve(i)]),time.clock())

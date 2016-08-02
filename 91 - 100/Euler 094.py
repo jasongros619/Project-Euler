@@ -1,48 +1,81 @@
-#problem 94
-import time
-start=time.time()
+"""
+It is easily proved that no equilateral triangle exists with integral length
+sides and integral area. However, the almost equilateral triangle 5-5-6 has
+an area of 12 square units.
 
-def isint(n):
-    return abs( round(n) - n) < 0.0000000001
+We shall define an almost equilateral triangle to be a triangle for which
+two sides are equal and the third differs by no more than one unit.
 
-def isgood(n):
-    return isint( ( 4+3*n*n)**0.5 )
+Find the sum of the perimeters of all almost equilateral triangles with
+integral side lengths and area and whose perimeters do not exceed one billion
+(1,000,000,000).
+"""
 
-goods=[0,2]
-for n in range(2,100):
-    k=goods[n-1]*4-goods[n-2]
-    if k>10**9/3:
-        break
-    goods.append(k)
-#print(goods)
+#Each triangle has side lengths, (s,s,s+1) or (s,s,s-1)
+
+"""
+We can create a list of small s which work.
+By examining it, the following recurance relation forms
+    s_0 = 1
+    s_1 = 1
+    s_n = 4*s_(n-1) + s_(n-2) + 2* (-1) ^ n
+Additionally it alternates between (s,s,s+1) and (s,s,s-1)
+The first two triangles (1,1,2) and (1,1,0) should not be added to final answer
+These two triangles have 0 area.
 
 
-num1=[]
-num2=[]
-for g in goods:
-    k=int( (g*g*3+4)**0.5 )
-    a=(k-1)/3
-    b=(k+1)/3
-    if isint(a):
-        num1.append( (round(a),round(a)-1 ))
-    if isint(b):
-        num2.append( (round(b),round(b)+1 ))
+At this point you can generate all perimeters below N in log(N) time.
+I believe this is what the problem writers intended.
+You can further examine it with math to solve in constant time.
 
-ans=0
-def area(t):
-    b=t[1]/2
-    h=(t[0]**2-b**2)**0.5
-    return b*h/2
 
-for t in num1:
-    k=area(t)
-    if k>0 and isint(k):
-        ans+=t[0]*2+t[1]
-        #ans+=1
-for t in num2:
-    k=area(t)
-    if k>0 and isint(k):
-        ans+=t[0]*2+t[1]
-        #ans+=1
-print(ans)
-print(time.time()-start)
+We can solve explicitly for s_n using the recurrence relation.
+Then we can solve explicitly for the n'th perimeter, P_n.
+"""
+Q = 2 + 3**0.5 #relevant constant ~ 3.7
+
+def Perimeter(n):
+    return Q ** (n) + Q ** (-n) + 2 * (-1) ** n
+"""
+To sum P_0 + P_1 + ... + P_N is actually quite easy.
+It is the sum of 3 geometric series.
+"""
+
+#Sum of P_0 + P_1 + ... + P_n
+def Perimeter_Sum(n):
+    sum1 = (Q ** ( n+1) - 1) / (Q - 1)
+    sum2 = (Q ** (-n-1) - 1) / (1/Q - 1)
+    sum3 = 1 + (-1) ** n
+    return round(sum1 + sum2 + sum3)
+"""
+Thus if you know the max 'n' which is easy to approximate,
+you can find the sum in Constant time
+"""
+
+
+
+import math
+
+
+def Main(LIMIT):
+    #Solutions for very small values
+    if LIMIT < 16:
+        return 0
+    if LIMIT < 50:
+        return 16
+
+    #Since every term of P_n goes to 0 except for Q^n,
+    #the n for the biggest P_n below LIMIT is approximately:
+    n = int(math.log(LIMIT,Q))
+
+    #n may be off by 1 when close to a whole number
+    if Perimeter(n) > LIMIT:
+        n -= 1
+    elif Perimeter(n+1) < LIMIT:
+        n += 1
+
+    return Perimeter_Sum(n) - 6
+    #subtract 6 to remove triangles (2,1,1) and (0,1,1) with areas 0
+
+    
+print(Main(10**9))

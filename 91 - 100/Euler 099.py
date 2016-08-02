@@ -1,21 +1,35 @@
+"""
+Comparing two numbers written in index form like 211 and 37 is not difficult,
+as any calculator would confirm that 2^11 = 2048 < 3^7 = 2187.
+
+However, confirming that 632382518061 > 519432525806 would be much more
+difficult, as both numbers contain over three million digits.
+
+Using base_exp.txt (right click and 'Save Link/Target As...'), a 22K text
+file containing one thousand lines with a base/exponent pair on each line,
+determine which line number has the greatest numerical value.
+
+NOTE: The first two lines in the file represent the numbers in the example
+given above.
+"""
+
+import time
+start = time.clock()
 import math
-myfile=open("C:/Users/Jason Gros/Desktop/Euler/Complete/091 - 100/p099_base_exp.txt","r")
-arr=[]
+
+myfile=open("p099_base_exp.txt","r")
+max_val = 0
+max_ind = None
 
 for i in range(1000):
-    file=myfile.readline()[:-1].split(",")
-    file[0]=int(file[0])
-    file[1]=int(file[1])
-    file.append( math.log( file[0],10)*file[1])
-    file.append(i+1)
-    arr.append(file)
+    line=myfile.readline()[:-1].split(",")
+    base=int(line[0])
+    exponent=int(line[1])
 
-maxv=0
-for a in arr:
-    if a[2]>maxv:
-        maxv=a[2]
-for a in arr:
-    if a[2]==maxv:
-        print(a[3])
-    
+    val = math.log(base) * exponent
+    if val > max_val:
+        max_val = val
+        max_ind = i + 1
+myfile.close()
 
+print(max_ind,time.clock()-start)
