@@ -52,7 +52,8 @@ while True:
     for i in (1, 2, 3):
         prime_count += rabin_miller( n*n - i*n + i)
     ratio = (100 * prime_count) / (2*n - 1)
-    if ratio < PRIME_PERCENT: break
+    if ratio < PRIME_PERCENT:
+        break
     n += 2
 
 print(n,time.clock()-start)

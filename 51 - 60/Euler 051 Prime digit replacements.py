@@ -51,7 +51,7 @@ Special hash that returns MULTIPLE hashes for input number
 Each hash is for any combination of 3 of the first 5 digits
 that are the same.
 hashvalue is based on which of those 3 digits they are and
-the value of the other digits. Collisions are carefull created
+the value of the other digits. Collisions are carefully created
 to lead to a solution to the problem
 """
 def my_hash(num):

@@ -27,7 +27,7 @@ import time
 start=time.clock()
 nums=[]
 
-#faster than int( str(n)[::-1] ) ?
+#reverses int faster than int( str(n)[::-1] ) ?
 def backwards(n):
     ans = 0
     while n>0:

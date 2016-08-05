@@ -1,4 +1,0 @@
-#Note that phi(p) and phi(p^n) sieve out only the multiples of p
-#anything with a prime factor used more than once was bad
-#It would make sense that 2*3*5*7*11... would have the most numbers sieved
-#2*3*5*7*9*11*13*17 = 510510 which is < 10^6
